@@ -26,9 +26,19 @@ class LoadingIndicatorView: UIView {
     }()
     
     override init(frame: CGRect) {
-        super.init(frame: frame)
+        super.init(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
         
-        backgroundColor = .blue//UIColor.black.withAlphaComponent(0.5)
+        backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        layer.cornerRadius = 20
+    
+        addShadow()
+        
+        addSubview(loadingLabel)
+        loadingLabel.translatesAutoresizingMaskIntoConstraints = false
+        loadingLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        loadingLabel.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        loadingLabel.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        loadingLabel.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {

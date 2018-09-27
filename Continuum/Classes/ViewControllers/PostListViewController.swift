@@ -22,9 +22,13 @@ class PostListViewController: UIViewController, LoadingIndicatorViewDelegate {
     let searchController = UISearchController(searchResultsController: nil)
     let loginPlacerholderVC = LoginPlacerholderViewController()
     
-    let loadingIndicatorView = LoadingIndicatorView(frame: CGRect(x: 0, y: 0, width: 150, height: 300))
+    let loadingIndicatorView = LoadingIndicatorView()
     
-    let refreshControl = UIRefreshControl()
+    lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.addTarget(self, action: #selector(performFullSync), for: .valueChanged)
+        return control
+    }()
     
     let searchResultsCountLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 25))
@@ -39,6 +43,7 @@ class PostListViewController: UIViewController, LoadingIndicatorViewDelegate {
         view.delegate = self
         view.register(PostCell.self, forCellReuseIdentifier: PostCell.reuseIdentifier)
         view.separatorColor = .clear
+        // FIXME: - the refresh control is pushing the tableview top edge inset down
         view.refreshControl = self.refreshControl
         return view
     }()
@@ -52,11 +57,12 @@ class PostListViewController: UIViewController, LoadingIndicatorViewDelegate {
         loadingIndicatorView.delegate = self
         loginPlacerholderVC.delegate = self
         
+        updateView()
+        
         performFullSync()
         
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostsChangedNotification, object: nil)
 
-        updateView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -78,13 +84,11 @@ private extension PostListViewController {
     }
     
     func setupConstraints() {
-        tableView.fillSuperview()
-        
-        view.addSubview(loadingIndicatorView)
-        self.loadingIndicatorView.anchorCenterSuperview()
+        tableView.anchor(view.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0)
     }
     
     func setupNavigationBar() {
+        title = "Continuum"
         self.definesPresentationContext = true
         
         navigationItem.rightBarButtonItem = addPostButton
@@ -104,23 +108,31 @@ private extension PostListViewController {
     @objc func reload() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
-            self.loadingIndicatorView.removeFromSuperview()
-            
-            if UIApplication.shared.isNetworkActivityIndicatorVisible {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
         }
     }
     
-    func performFullSync() {
+    @objc func performFullSync() {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        self.view.addSubview(self.loadingIndicatorView)
+        self.loadingIndicatorView.center = self.view.center
+        self.refreshControl.beginRefreshing()
         
-        self.view.layoutIfNeeded()
         PostController.shared.fetchPost { (posts) in
             guard let posts = posts else { return }
             PostController.shared.posts = posts
             self.resultsArray = PostController.shared.posts
-            self.reload()
+            
+            DispatchQueue.main.async {
+                
+                self.loadingIndicatorView.removeFromSuperview()
+                self.tableView.reloadData()
+                self.refreshControl.beginRefreshing()
+                if UIApplication.shared.isNetworkActivityIndicatorVisible {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                }
+                
+            }
+
         }
     }
     

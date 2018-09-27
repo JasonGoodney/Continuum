@@ -74,9 +74,13 @@ class PostController {
     }
     
     func fetchPost(completion: @escaping ([Post]?) -> Void) {
+
         
         let predicate = NSPredicate(value: true)
+        
         let query = CKQuery(recordType: PostKey.RecordType, predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        
         publicDB.perform(query, inZoneWith: nil) { (records, error) in
              if let error = error {
                 print("🔊Error in function: \(#function) \(error) \(error.localizedDescription)")
@@ -98,11 +102,11 @@ class PostController {
         let referencePredicate = NSPredicate(format: "postReference == %@", reference)
         let recordIds = post.comments.compactMap({ $0.ckRecordId })
         
-        //'recordID' is from Apple's references, recordID not my variables
         let notFetchedPredicte = NSPredicate(format: "NOT(recordID IN %@)", recordIds)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [referencePredicate, notFetchedPredicte])
         
         let query = CKQuery(recordType: CommentKey.RecordType, predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
         
         publicDB.perform(query, inZoneWith: nil) { (records, error) in
             
@@ -124,7 +128,7 @@ class PostController {
         
         let predicate = NSPredicate(value: true)
     
-        let subscription = CKQuerySubscription(recordType: PostKey.RecordType, predicate: predicate, options: [.firesOnRecordCreation])
+        let subscription = CKQuerySubscription(recordType: PostKey.RecordType, predicate: predicate, subscriptionID: "AllPosts", options: [.firesOnRecordCreation])
         
         let notificationInfo = CKSubscription.NotificationInfo()
         notificationInfo.title = "New Post"

@@ -123,11 +123,8 @@ private extension PostDetailViewController {
     }
     
     func setupConstraints() {
-        
-        let margin: CGFloat = 20
-        let cardViewHeight: CGFloat = view.frame.width //- (margin * 2)
-        
-        cardView.anchor(view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: cardViewHeight)
+
+        cardView.anchor(view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: view.frame.width)
         
         buttonStackView.anchor(cardView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 8, bottomConstant: 0, rightConstant: 8, widthConstant: 0, heightConstant: 44)
         
@@ -183,6 +180,8 @@ private extension PostDetailViewController {
         let alertController = UIAlertController(title: "New Comment", message: "Add groovy comment", preferredStyle: .alert)
         alertController.addTextField { (textField) in
             textField.placeholder = "Say something..."
+            textField.autocorrectionType = .default
+            textField.autocapitalizationType = .sentences
         }
         
         let okAction = UIAlertAction(title: "OK", style: .default) { (_) in
