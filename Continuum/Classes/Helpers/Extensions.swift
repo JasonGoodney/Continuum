@@ -78,3 +78,13 @@ extension UIView {
         self.layer.mask = maskLayer
     }
 }
+
+// MARK: - UIDate
+extension Date {
+    func prettyDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .medium
+        return dateFormatter.string(from: self)
+    }
+}

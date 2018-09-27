@@ -16,6 +16,8 @@ class PostListViewController: UIViewController {
     var isSearching = false
     
     // MARK: - Subviews
+    let refreshControl = UIRefreshControl()
+    
     let searchResultsCountLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 15)
@@ -29,6 +31,7 @@ class PostListViewController: UIViewController {
         view.delegate = self
         view.register(PostCell.self, forCellReuseIdentifier: PostCell.reuseIdentifier)
         view.separatorColor = .clear
+        view.refreshControl = self.refreshControl
         return view
     }()
     lazy var addPostButton = UIBarButtonItem(
@@ -38,28 +41,13 @@ class PostListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        CKContainer.default().accountStatus { (status, error) in
-            if let error = error {
-                print("error get account status: \(error)")
-            }
-            
-            switch status {
-            case .available:
-                break
-            case .noAccount:
-                let okAction = UIAlertAction(title: "Take Me", style: .default) { (_) in
-                    self.openSettings()
-                }
-                let cancelAction = UIAlertAction(title: "Bore Me", style: .cancel, handler: nil)
-                Alert.present(on: self, title: "Must be logged into iCloud", message: "We'll take you to the setting.", withActions: [cancelAction, okAction])
-            case .couldNotDetermine:
-                print("Could not determine account")
-            case .restricted:
-                print("Account access has been restricted")
-            }
-        }
-
+        checkAccountStatus()
         
+        performFullSync()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostsChangedNotification, object: nil)
+        
+
         updateView()
     }
     
@@ -69,16 +57,6 @@ class PostListViewController: UIViewController {
         reload()
     }
     
-    func openSettings() {
-        let settingsCloudKitURL = URL(string: "App-Prefs:root=CASTLE")
-        if let url = settingsCloudKitURL, UIApplication.shared.canOpenURL(url) {
-            if #available(iOS 10, *) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                UIApplication.shared.openURL(url)
-            }
-        }
-    }
 }
 
 // MARK: - UpdateView
@@ -88,7 +66,6 @@ private extension PostListViewController {
         setupConstraints()
         setupNavigationBar()
     }
-
     
     func setupConstraints() {
         tableView.fillSuperview()
@@ -101,7 +78,6 @@ private extension PostListViewController {
         
         let searchController = UISearchController(searchResultsController: nil)
         navigationItem.searchController = searchController
-//        searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -118,6 +94,53 @@ private extension PostListViewController {
     @objc func reload() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+            if UIApplication.shared.isNetworkActivityIndicatorVisible {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
+        }
+    }
+    
+    func performFullSync() {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        PostController.shared.fetchPost { (posts) in
+            guard let posts = posts else { return }
+            PostController.shared.posts = posts
+            self.resultsArray = PostController.shared.posts
+            self.reload()
+        }
+    }
+    
+    func checkAccountStatus() {
+        CKContainer.default().accountStatus { (status, error) in
+            if let error = error {
+                print("error get account status: \(error)")
+            }
+            
+            switch status {
+            case .available:
+                break
+            case .noAccount:
+                let okAction = UIAlertAction(title: "Take Me", style: .default) { (_) in
+                    openSettings()
+                }
+                let cancelAction = UIAlertAction(title: "Bore Me", style: .cancel, handler: nil)
+                Alert.present(on: self, title: "Must be logged into iCloud", message: "We'll take you to the setting.", withActions: [cancelAction, okAction])
+            case .couldNotDetermine:
+                print("Could not determine account")
+            case .restricted:
+                print("Account access has been restricted")
+            }
+        }
+        
+        func openSettings() {
+            let settingsCloudKitURL = URL(string: "App-Prefs:root=CASTLE")
+            if let url = settingsCloudKitURL, UIApplication.shared.canOpenURL(url) {
+                if #available(iOS 10, *) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
+            }
         }
     }
 }
@@ -154,6 +177,8 @@ extension PostListViewController: UITableViewDelegate {
         let post = PostController.shared.posts[indexPath.row]
         let detailVC = PostDetailViewController()
         detailVC.post = post
+        
+        // TODO: - make model
         navigationController?.push(detailVC)
     }
     

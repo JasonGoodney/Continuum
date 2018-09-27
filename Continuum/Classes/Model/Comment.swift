@@ -38,12 +38,11 @@ class Comment {
     
     init?(record: CKRecord) {
         guard let text = record[CommentKey.Text] as? String,
-            let post = record[CommentKey.Post] as? Post,
             let timestamp = record[CommentKey.Timestamp] as? Date,
             let postReference = record[CommentKey.PostReference] as? CKRecord.Reference
         else { return nil }
         
-        self.post = post
+//        self.post = post
         self.text = text
         self.timestamp = timestamp
         self.ckRecordId = record.recordID
@@ -55,12 +54,12 @@ extension CKRecord {
     convenience init(comment: Comment) {
         let recordId = comment.ckRecordId
         
-        self.init(recordType: CommentKey.RecordType, recordID: recordId)
         
         guard let post = comment.post else {
             fatalError("Comment does not have a Post relationship")
         }
         
+        self.init(recordType: CommentKey.RecordType, recordID: recordId)
         self.setValue(comment.text, forKey: CommentKey.Text)
         self.setValue(comment.timestamp, forKey: CommentKey.Timestamp)
         self.setValue(CKRecord.Reference(recordID: post.ckRecordId, action: .deleteSelf), forKey: CommentKey.PostReference)

@@ -21,7 +21,13 @@ class Post {
     var photoData: Data?
     var timestamp: Date
     var caption: String
-    var comments: [Comment]
+    var comments: [Comment] {
+        didSet {
+            DispatchQueue.main.async {            
+                NotificationCenter.default.post(name: PostController.shared.PostCommentsChangedNotification, object: self)
+            }
+        }
+    }
     var ckRecordId: CKRecord.ID
     var tempUrl: URL?
     
@@ -96,8 +102,7 @@ extension CKRecord {
         self.setValue(post.caption, forKey: PostKey.Caption)
         self.setValue(post.timestamp, forKey: PostKey.Timestamp)
         self.setValue(post.photoAsset, forKey: PostKey.PhotoAsset)
-        
-        
+            
     }
 }
 

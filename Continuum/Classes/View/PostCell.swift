@@ -33,6 +33,14 @@ private extension PostCell {
         guard let post = post else { return }
         cardView.title = post.caption
         cardView.image = post.photo
+        
+        let commentsCount = post.comments.count
+        if commentsCount == 1 {
+            cardView.subtitle = "\(commentsCount) Comment"
+        } else {
+            cardView.subtitle = "\(commentsCount) Comments"
+        }
+        
     }
     
     func setupConstraints() {

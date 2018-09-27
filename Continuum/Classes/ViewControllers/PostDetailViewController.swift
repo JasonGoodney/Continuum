@@ -70,6 +70,13 @@ class PostDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        guard let post = post else { return }
+        PostController.shared.fetchCommentsFor(post: post) { (success) in
+            self.reload()
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostCommentsChangedNotification, object: nil)
+        
         updateView()
     }
     
@@ -104,7 +111,7 @@ private extension PostDetailViewController {
         let margin: CGFloat = 20
         let cardViewHeight: CGFloat = view.frame.width - (margin * 2)
         
-        cardView.anchor(view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 20, leftConstant: margin, bottomConstant: 0, rightConstant: margin, widthConstant: 0, heightConstant: cardViewHeight)
+        cardView.anchor(view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 0, leftConstant: margin, bottomConstant: 0, rightConstant: margin, widthConstant: 0, heightConstant: cardViewHeight)
         
         buttonStackView.anchor(cardView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 8, bottomConstant: 0, rightConstant: 8, widthConstant: 0, heightConstant: 44)
         
@@ -142,6 +149,9 @@ private extension PostDetailViewController {
     @objc func reload() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+            if UIApplication.shared.isNetworkActivityIndicatorVisible {
+               UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
         }
     }
     
@@ -175,7 +185,11 @@ extension PostDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SubtitleTableViewCell.reuseIdentifier, for: indexPath) as? SubtitleTableViewCell else { return UITableViewCell() }
         
+        guard let post = post else { return UITableViewCell() }
+        let comment = post.comments[indexPath.row]
         
+        cell.textLabel?.text = comment.text
+        cell.detailTextLabel?.text = comment.timestamp.prettyDate()
         
         return cell
     }
