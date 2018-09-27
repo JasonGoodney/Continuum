@@ -12,28 +12,10 @@ class AddPostViewController: UIViewController {
 
     // MARK: - Propeties
     private var keyboardHeight: CGFloat = 0
-    private var imagePicker = UIImagePickerController()
     
     // MARK: - Subviews
-    let cardView = CardView()
+    let photoSelectVC = PhotoSelectorViewController()
     
-    lazy var selectPhotoButton: UILabel = {
-        let button = UILabel()
-        button.text = "Tap Tap\nTo Select a Photo"
-        button.textColor = .lightGray
-        button.font = UIFont.boldSystemFont(ofSize: 20)
-        button.numberOfLines = 2
-        button.isUserInteractionEnabled = true
-        button.textAlignment = .center
-        return button
-    }()
-    
-    lazy var doubleTapGesture: UITapGestureRecognizer = {
-        let gesture = UITapGestureRecognizer()
-        gesture.numberOfTapsRequired = 2
-        gesture.addTarget(self, action: #selector(selectPhotoButtonTapped))
-        return gesture
-    }()
     
     lazy var sendTextToolbar: SendTextToolbar = {
         let toolbar = SendTextToolbar()
@@ -54,7 +36,9 @@ class AddPostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        photoSelectVC.photoSelectorDelegate = self
         sendTextToolbar.sendTextDelegate = self
+        
         updateView()
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -62,26 +46,24 @@ class AddPostViewController: UIViewController {
         
         hideKeyboardOnSwipeDown()
         
-        selectPhotoButton.addGestureRecognizer(doubleTapGesture)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        cardView.imageView.image = nil
-        selectPhotoButton.text = "Tap Tap\nTo Select a Photo"
-    }
+    
 }
 
 // MARK: - UI
 private extension AddPostViewController {
     func updateView() {
         view.backgroundColor = .white
-        view.addSubviews([cardView, selectPhotoButton, sendTextToolbar, cancelButton])
+        photoSelectVC.view.backgroundColor = .orange
+        add(photoSelectVC)
+        view.addSubviews([sendTextToolbar, cancelButton])
+        
         setupConstraints()
         
         cancelButton.layer.cornerRadius = 8
@@ -90,12 +72,12 @@ private extension AddPostViewController {
     
     func setupConstraints() {
         let margin: CGFloat = 20
-        cardView.anchor(view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 20, leftConstant: margin, bottomConstant: 0, rightConstant: margin, widthConstant: 0, heightConstant: view.frame.width - (margin * 2))
-        selectPhotoButton.anchor(view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 30, leftConstant: margin + 10, bottomConstant: 0, rightConstant: margin + 10, widthConstant: 0, heightConstant: view.frame.width - (margin * 2) - 10)
+
+        photoSelectVC.view.anchor(view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 22, leftConstant: margin, bottomConstant: 0, rightConstant: margin, widthConstant: 0, heightConstant: view.frame.width - (margin * 2))
         
         sendTextToolbar.anchor(nil, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 44)
         
-        cancelButton.anchor(view.topAnchor, leading: nil, bottom: nil, trailing: view.trailingAnchor, topConstant: 24, leftConstant: 0, bottomConstant: 0, rightConstant: 8, widthConstant: 70, heightConstant: 0)
+        cancelButton.anchor(view.topAnchor, leading: nil, bottom: nil, trailing: view.trailingAnchor, topConstant: 22, leftConstant: 0, bottomConstant: 0, rightConstant: 8, widthConstant: 70, heightConstant: 0)
         
     }
 
@@ -129,31 +111,13 @@ extension AddPostViewController {
         }
     }
     
-    @objc func selectPhotoButtonTapped() {
-        print("🤶\(#function)")
-        imagePicker.allowsEditing = false
-        imagePicker.delegate = self
-        
-        let photoAction = UIAlertAction(title: "Photo", style: .default) { (_) in
-            self.imagePicker.sourceType = .photoLibrary
-            self.present(self.imagePicker)
-        }
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { (_) in
-            self.imagePicker.sourceType = .camera
-            self.present(self.imagePicker)
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
-        Alert.present(on: self, title: "Select a Photo", message: nil, withActions: [photoAction, cameraAction, cancelAction], style: .actionSheet)
-    }
-    
 }
 
 // MARK: - SendTextToolbarDelegate
 extension AddPostViewController: SendTextToolbarDelegate {
     @objc func sendTextToolbarSendButtonTapped(_ sendTextToolbar: SendTextToolbar) {
         print("🤶\(#function)")
-        guard let photo = cardView.imageView.image else {
+        guard let photo = photoSelectVC.cardView.imageView.image else {
             Alert.presentNoPhotoAlert(on: self)
             return }
         guard let caption = sendTextToolbar.textField.text, !caption.isEmpty else {
@@ -171,27 +135,9 @@ extension AddPostViewController: SendTextToolbarDelegate {
     }
 }
 
-// MARK: - UIImagePickerControllerDelegate
-extension AddPostViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-        selectPhotoButton.text = ""
-        cardView.imageView.image = image
-        dismiss()
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss()
+extension AddPostViewController: PhotoSelectorViewControllerDelegate {
+    func photoSelectViewControllerSelected(image: UIImage) {
+        photoSelectVC.cardView.imageView.image = image
     }
 }
 
-extension Alert {
-    static func presentNoPhotoAlert(on vc: UIViewController) {
-        present(on: vc, title: "No Photo", message: "You must select a photo to add a post.", withActions: [UIAlertAction(title: "OK", style: .cancel)])
-    }
-    
-    static func presentNoCaptionAlert(on vc: UIViewController) {
-        present(on: vc, title: "No Caption", message: "You must write a caption to add a post.", withActions: [UIAlertAction(title: "OK", style: .cancel)])
-    }
-}

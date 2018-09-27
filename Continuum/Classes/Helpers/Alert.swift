@@ -26,4 +26,12 @@ struct Alert {
             vc.present(alertController, animated: true, completion: nil)
         }
     }
+
+    static func presentNoPhotoAlert(on vc: UIViewController) {
+        present(on: vc, title: "No Photo", message: "You must select a photo to add a post.", withActions: [UIAlertAction(title: "OK", style: .cancel)])
+    }
+    
+    static func presentNoCaptionAlert(on vc: UIViewController) {
+        present(on: vc, title: "No Caption", message: "You must write a caption to add a post.", withActions: [UIAlertAction(title: "OK", style: .cancel)])
+    }
 }
