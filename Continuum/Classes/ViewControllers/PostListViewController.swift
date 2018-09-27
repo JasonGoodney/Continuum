@@ -9,20 +9,26 @@
 import UIKit
 import CloudKit
 
-class PostListViewController: UIViewController {
+class PostListViewController: UIViewController, LoadingIndicatorViewDelegate {
+    func loadingIndicatorViewIsShown() {
+        
+    }
     
     // MARK: - Properties
     var resultsArray: [Post] = []
     var isSearching = false
     
     // MARK: - Subviews
+    let searchController = UISearchController(searchResultsController: nil)
     let loginPlacerholderVC = LoginPlacerholderViewController()
+    
+    let loadingIndicatorView = LoadingIndicatorView(frame: CGRect(x: 0, y: 0, width: 150, height: 300))
     
     let refreshControl = UIRefreshControl()
     
     let searchResultsCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 15)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 25))
+        label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = .darkGray
         return label
     }()
@@ -43,6 +49,7 @@ class PostListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadingIndicatorView.delegate = self
         loginPlacerholderVC.delegate = self
         
         performFullSync()
@@ -72,6 +79,9 @@ private extension PostListViewController {
     
     func setupConstraints() {
         tableView.fillSuperview()
+        
+        view.addSubview(loadingIndicatorView)
+        self.loadingIndicatorView.anchorCenterSuperview()
     }
     
     func setupNavigationBar() {
@@ -79,15 +89,12 @@ private extension PostListViewController {
         
         navigationItem.rightBarButtonItem = addPostButton
         
-        let searchController = UISearchController(searchResultsController: nil)
         navigationItem.searchController = searchController
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
-        navigationItem.hidesSearchBarWhenScrolling = false
         searchController.searchBar.delegate = self
         
         let searchResultsCountItem = UIBarButtonItem(customView: searchResultsCountLabel)
-        searchResultsCountItem.isEnabled = false
         navigationItem.leftBarButtonItem = searchResultsCountItem
     }
 }
@@ -97,6 +104,8 @@ private extension PostListViewController {
     @objc func reload() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+            self.loadingIndicatorView.removeFromSuperview()
+            
             if UIApplication.shared.isNetworkActivityIndicatorVisible {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
@@ -105,6 +114,8 @@ private extension PostListViewController {
     
     func performFullSync() {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        self.view.layoutIfNeeded()
         PostController.shared.fetchPost { (posts) in
             guard let posts = posts else { return }
             PostController.shared.posts = posts
@@ -170,8 +181,8 @@ extension PostListViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCell.reuseIdentifier, for: indexPath) as? PostCell else  {
             fatalError("Could not dequeue cell: \(PostCell.reuseIdentifier)")
         }
-        
-        let post = resultsArray[indexPath.row]
+        let posts = isSearching ? resultsArray : PostController.shared.posts
+        let post = posts[indexPath.row]
         cell.post = post
         
         return cell
@@ -184,16 +195,19 @@ extension PostListViewController: UITableViewDelegate {
         let post = PostController.shared.posts[indexPath.row]
         let detailVC = PostDetailViewController()
         detailVC.post = post
-        
-        // TODO: - make modal
-//        navigationController?.push(detailVC)
         present(detailVC)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return view.frame.width
     }
+}
 
+// MARK: - UIScrollViewDelegate
+extension PostListViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        searchController.searchBar.resignFirstResponder()
+    }
 }
 
 // MARK: - UISearchBarDelegate
@@ -203,24 +217,27 @@ extension PostListViewController: UISearchBarDelegate {
             resultsArray = PostController.shared.posts
         } else {
             resultsArray = PostController.shared.posts.filter { $0.matches(searchText) }
-            
-            
         }
+        
         searchResultsCountLabel.text = "Results: \(resultsArray.count)"
         tableView.reloadData()
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchResultsCountLabel.text = "Results: \(PostController.shared.posts.count)"
         isSearching = true
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchResultsCountLabel.text = ""
         isSearching = false
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsCountLabel.text = ""
         resultsArray = PostController.shared.posts
+        searchBar.resignFirstResponder()
+        tableView.reloadData()
     }
 }
 
