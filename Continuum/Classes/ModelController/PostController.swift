@@ -171,7 +171,7 @@ class PostController {
             
             guard let subscriptionId = subscription?.subscriptionID else { completion?(false, error); return }
             
-            print(subscriptionId)
+            print(subscription?.notificationInfo?.title)
             completion?(true, nil)
         }
     }

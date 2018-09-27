@@ -86,7 +86,7 @@ class CardView: UIView {
         guard let image = imageView.image else { return }
         imageView.frame = AVMakeRect(aspectRatio: image.size,
                                      insideRect: imageView.frame)
-        imageView.addCornerRadius()
+//        imageView.addCornerRadius()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -114,7 +114,7 @@ extension UIView {
         layer.shadowRadius = 12.0
         layer.shadowOpacity = 0.7
         layer.masksToBounds = false
-        clipsToBounds = false
+//        clipsToBounds = false
     }
     
     func addCornerRadius(_ radius: CGFloat = 20) {

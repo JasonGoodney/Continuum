@@ -92,6 +92,7 @@ private extension PostDetailViewController {
         
         if let post = post {
             cardView.imageView.image = post.photo
+            cardView.title = post.caption
             reload()
             
             PostController.shared.checkSubscription(to: post) { (success) in
