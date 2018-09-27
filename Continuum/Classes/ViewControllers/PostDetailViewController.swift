@@ -49,18 +49,21 @@ class PostDetailViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(commentButtonTapped), for: .touchUpInside)
         button.setTitle("Comment", for: .normal)
+        button.setTitleColor(.lightGray, for: .normal)
         return button
     }()
     lazy var shareButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
         button.setTitle("Share", for: .normal)
+        button.setTitleColor(.lightGray, for: .normal)
         return button
     }()
     lazy var followButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(followButtonTapped), for: .touchUpInside)
         button.setTitle("Follow", for: .normal)
+        button.setTitleColor(.lightGray, for: .normal)
         return button
     }()
     // MARK: - Lifcycle
@@ -88,6 +91,8 @@ private extension PostDetailViewController {
             cardView.imageView.image = photo
             reload()
         }
+        
+        view.bringSubviewToFront(buttonStackView)
     }
     
     func addSubviews(subviews: [UIView]) {
@@ -101,7 +106,7 @@ private extension PostDetailViewController {
         
         cardView.anchor(view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 20, leftConstant: margin, bottomConstant: 0, rightConstant: margin, widthConstant: 0, heightConstant: cardViewHeight)
         
-        buttonStackView.anchor(cardView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 8, leftConstant: 8, bottomConstant: 0, rightConstant: 8, widthConstant: 0, heightConstant: 0)
+        buttonStackView.anchor(cardView.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, topConstant: 0, leftConstant: 8, bottomConstant: 0, rightConstant: 8, widthConstant: 0, heightConstant: 44)
         
         tableView.anchor(buttonStackView.bottomAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor, topConstant: 8, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 0 )
     }
@@ -119,12 +124,12 @@ private extension PostDetailViewController {
 // MARK: - User Interaction
 private extension PostDetailViewController {
     @objc func commentButtonTapped() {
-        print("\(#function)")
         addCommentAlert()
     }
     
     @objc func shareButtonTapped() {
-        print("\(#function)")
+        guard let photo = post?.photo else { return }
+        ShareSheet.present(on: self, with: photo)
     }
     
     @objc func followButtonTapped() {

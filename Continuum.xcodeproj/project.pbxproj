@@ -26,6 +26,7 @@
 		D7E5CB08215BC6DB00997CB4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CB07215BC6DB00997CB4 /* Extensions.swift */; };
 		D7E5CB0C215BCB8A00997CB4 /* SendTextToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CB0B215BCB8A00997CB4 /* SendTextToolbar.swift */; };
 		D7E5CB45215C77BD00997CB4 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CB44215C77BD00997CB4 /* Alert.swift */; };
+		D7E5CB48215C833800997CB4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CB47215C833800997CB4 /* ShareSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		D7E5CB07215BC6DB00997CB4 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D7E5CB0B215BCB8A00997CB4 /* SendTextToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTextToolbar.swift; sourceTree = "<group>"; };
 		D7E5CB44215C77BD00997CB4 /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		D7E5CB47215C833800997CB4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 		D7E5CB40215C775000997CB4 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				D7E5CB47215C833800997CB4 /* ShareSheet.swift */,
 				D7E5CB44215C77BD00997CB4 /* Alert.swift */,
 				D7E5CB05215BC6CE00997CB4 /* UIView+Anchors.swift */,
 				D7E5CB01215BC66000997CB4 /* ReuseIdentifiable.swift */,
@@ -237,6 +240,7 @@
 				D7E5CB02215BC66000997CB4 /* ReuseIdentifiable.swift in Sources */,
 				D7E5CB06215BC6CE00997CB4 /* UIView+Anchors.swift in Sources */,
 				D7E5CAEB215BC1D600997CB4 /* PostListViewController.swift in Sources */,
+				D7E5CB48215C833800997CB4 /* ShareSheet.swift in Sources */,
 				D7E5CAFB215BC26500997CB4 /* SearchableRecord.swift in Sources */,
 				D7E5CAF1215BC1FE00997CB4 /* PhotoSelectViewController.swift in Sources */,
 				D7E5CAF9215BC25C00997CB4 /* Comment.swift in Sources */,

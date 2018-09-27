@@ -45,22 +45,16 @@ class AddPostViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         hideKeyboardOnSwipeDown()
-        
-        
+                
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
-    
+
 }
 
 // MARK: - UI
 private extension AddPostViewController {
     func updateView() {
         view.backgroundColor = .white
-        photoSelectVC.view.backgroundColor = .orange
+        
         add(photoSelectVC)
         view.addSubviews([sendTextToolbar, cancelButton])
         
