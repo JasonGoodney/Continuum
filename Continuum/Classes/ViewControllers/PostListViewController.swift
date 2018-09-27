@@ -16,6 +16,8 @@ class PostListViewController: UIViewController {
     var isSearching = false
     
     // MARK: - Subviews
+    let loginPlacerholderVC = LoginPlacerholderViewController()
+    
     let refreshControl = UIRefreshControl()
     
     let searchResultsCountLabel: UILabel = {
@@ -41,18 +43,19 @@ class PostListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        checkAccountStatus()
+        loginPlacerholderVC.delegate = self
         
         performFullSync()
         
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostsChangedNotification, object: nil)
-        
 
         updateView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        checkAccountStatus()
+        
         resultsArray = PostController.shared.posts
         reload()
     }
@@ -89,7 +92,7 @@ private extension PostListViewController {
     }
 }
 
-// MARK: - Methods
+// MARK: - Private Methods
 private extension PostListViewController {
     @objc func reload() {
         DispatchQueue.main.async {
@@ -118,28 +121,32 @@ private extension PostListViewController {
             
             switch status {
             case .available:
+                if self.children.contains(self.loginPlacerholderVC) {
+                    self.loginPlacerholderVC.remove()
+                }
                 break
             case .noAccount:
                 let okAction = UIAlertAction(title: "Take Me", style: .default) { (_) in
-                    openSettings()
+                    self.openSettings()
                 }
                 let cancelAction = UIAlertAction(title: "Bore Me", style: .cancel, handler: nil)
                 Alert.present(on: self, title: "Must be logged into iCloud", message: "We'll take you to the setting.", withActions: [cancelAction, okAction])
+                self.add(self.loginPlacerholderVC)
             case .couldNotDetermine:
                 print("Could not determine account")
             case .restricted:
                 print("Account access has been restricted")
             }
         }
-        
-        func openSettings() {
-            let settingsCloudKitURL = URL(string: "App-Prefs:root=CASTLE")
-            if let url = settingsCloudKitURL, UIApplication.shared.canOpenURL(url) {
-                if #available(iOS 10, *) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                } else {
-                    UIApplication.shared.openURL(url)
-                }
+    }
+    
+    func openSettings() {
+        let settingsCloudKitURL = URL(string: "App-Prefs:root=CASTLE")
+        if let url = settingsCloudKitURL, UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                UIApplication.shared.openURL(url)
             }
         }
     }
@@ -178,8 +185,9 @@ extension PostListViewController: UITableViewDelegate {
         let detailVC = PostDetailViewController()
         detailVC.post = post
         
-        // TODO: - make model
-        navigationController?.push(detailVC)
+        // TODO: - make modal
+//        navigationController?.push(detailVC)
+        present(detailVC)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -213,5 +221,13 @@ extension PostListViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsCountLabel.text = ""
         resultsArray = PostController.shared.posts
+    }
+}
+
+// MARK: - LoginPlacerholderViewControllerDelegate
+extension PostListViewController: LoginPlacerholderViewControllerDelegate {
+    func loginPlacerholderViewLoginButtonTapped() {
+        print("🤶\(#function)")
+        openSettings()
     }
 }

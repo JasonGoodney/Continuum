@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AddPostViewController: UIViewController {
+class AddPostViewController: UIViewController, CancelButtonDelegate {
 
     // MARK: - Propeties
     private var keyboardHeight: CGFloat = 0
@@ -23,19 +23,22 @@ class AddPostViewController: UIViewController {
         toolbar.buttonTitle = "Share"
         return toolbar
     }()
+    lazy var cancelButton = CancelButton(frame: .zero, parentViewController: self)
+//    lazy var cancelButton: UIButton = {
+//        let button = UIButton()
+//        button.setTitle("Cancel", for: .normal)
+//        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+//        button.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+//        return button
+//    }()
     
-    lazy var cancelButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Cancel", for: .normal)
-        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        button.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        return button
-    }()
+    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        cancelButton.delegate = self
         photoSelectVC.photoSelectorDelegate = self
         sendTextToolbar.sendTextDelegate = self
         

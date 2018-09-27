@@ -11,6 +11,7 @@
 		D7275BB7215B573D004D286B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7275BB5215B573D004D286B /* Main.storyboard */; };
 		D7275BB9215B573E004D286B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D7275BB8215B573E004D286B /* Assets.xcassets */; };
 		D7275BBC215B573E004D286B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7275BBA215B573E004D286B /* LaunchScreen.storyboard */; };
+		D73A4C82215D5B0500B9A486 /* CancelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73A4C81215D5B0500B9A486 /* CancelButton.swift */; };
 		D7E5CAEB215BC1D600997CB4 /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CAEA215BC1D600997CB4 /* PostListViewController.swift */; };
 		D7E5CAED215BC1E500997CB4 /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CAEC215BC1E500997CB4 /* PostDetailViewController.swift */; };
 		D7E5CAEF215BC1EE00997CB4 /* AddPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5CAEE215BC1EE00997CB4 /* AddPostViewController.swift */; };
@@ -38,6 +39,7 @@
 		D7275BB8215B573E004D286B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D7275BBB215B573E004D286B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D7275BBD215B573E004D286B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D73A4C81215D5B0500B9A486 /* CancelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancelButton.swift; sourceTree = "<group>"; };
 		D7E5CAEA215BC1D600997CB4 /* PostListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		D7E5CAEC215BC1E500997CB4 /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
 		D7E5CAEE215BC1EE00997CB4 /* AddPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 				D7E5CB03215BC6B000997CB4 /* CardView.swift */,
 				D7E5CAF3215BC22500997CB4 /* PostCell.swift */,
 				D7E5CB0B215BCB8A00997CB4 /* SendTextToolbar.swift */,
+				D73A4C81215D5B0500B9A486 /* CancelButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				D7275BB2215B573D004D286B /* AppDelegate.swift in Sources */,
 				D7E5CAF7215BC25600997CB4 /* Post.swift in Sources */,
 				D7E5CB04215BC6B000997CB4 /* CardView.swift in Sources */,
+				D73A4C82215D5B0500B9A486 /* CancelButton.swift in Sources */,
 				D7E5CAF4215BC22500997CB4 /* PostCell.swift in Sources */,
 				D7E5CB45215C77BD00997CB4 /* Alert.swift in Sources */,
 				D7E5CB08215BC6DB00997CB4 /* Extensions.swift in Sources */,
