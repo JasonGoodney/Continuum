@@ -7,8 +7,7 @@
 //
 
 import UIKit
-
-import UIKit
+import CloudKit
 
 class PostListViewController: UIViewController {
     
@@ -39,6 +38,28 @@ class PostListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        CKContainer.default().accountStatus { (status, error) in
+            if let error = error {
+                print("error get account status: \(error)")
+            }
+            
+            switch status {
+            case .available:
+                break
+            case .noAccount:
+                let okAction = UIAlertAction(title: "Take Me", style: .default) { (_) in
+                    self.openSettings()
+                }
+                let cancelAction = UIAlertAction(title: "Bore Me", style: .cancel, handler: nil)
+                Alert.present(on: self, title: "Must be logged into iCloud", message: "We'll take you to the setting.", withActions: [cancelAction, okAction])
+            case .couldNotDetermine:
+                print("Could not determine account")
+            case .restricted:
+                print("Account access has been restricted")
+            }
+        }
+
+        
         updateView()
     }
     
@@ -46,6 +67,17 @@ class PostListViewController: UIViewController {
         super.viewWillAppear(animated)
         resultsArray = PostController.shared.posts
         reload()
+    }
+    
+    func openSettings() {
+        let settingsCloudKitURL = URL(string: "App-Prefs:root=CASTLE")
+        if let url = settingsCloudKitURL, UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+        }
     }
 }
 
