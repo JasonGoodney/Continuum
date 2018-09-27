@@ -24,15 +24,6 @@ class AddPostViewController: UIViewController, CancelButtonDelegate {
         return toolbar
     }()
     lazy var cancelButton = CancelButton(frame: .zero, parentViewController: self)
-//    lazy var cancelButton: UIButton = {
-//        let button = UIButton()
-//        button.setTitle("Cancel", for: .normal)
-//        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-//        button.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-//        return button
-//    }()
-    
-    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {

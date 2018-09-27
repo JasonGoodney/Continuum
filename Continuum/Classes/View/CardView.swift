@@ -79,14 +79,12 @@ class CardView: UIView {
         
         setupConstraints()
         
-        addCornerRadius()
         addShadow()
         
         imageView.isUserInteractionEnabled = false
         guard let image = imageView.image else { return }
         imageView.frame = AVMakeRect(aspectRatio: image.size,
                                      insideRect: imageView.frame)
-//        imageView.addCornerRadius()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -104,7 +102,6 @@ class CardView: UIView {
         imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         imageView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
-  
 }
 
 extension UIView {

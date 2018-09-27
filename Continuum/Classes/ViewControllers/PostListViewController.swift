@@ -9,7 +9,7 @@
 import UIKit
 import CloudKit
 
-class PostListViewController: UIViewController, LoadingIndicatorViewDelegate {
+class PostListViewController: UIViewController {
     func loadingIndicatorViewIsShown() {
         
     }
@@ -54,7 +54,6 @@ class PostListViewController: UIViewController, LoadingIndicatorViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadingIndicatorView.delegate = self
         loginPlacerholderVC.delegate = self
         
         updateView()

@@ -8,14 +8,8 @@
 
 import UIKit
 
-protocol LoadingIndicatorViewDelegate: class {
-    func loadingIndicatorViewIsShown()
-}
-
 class LoadingIndicatorView: UIView {
     
-    weak var delegate: LoadingIndicatorViewDelegate?
-
     let loadingLabel: UILabel = {
         let label = UILabel()
         label.text = "Loading..."
