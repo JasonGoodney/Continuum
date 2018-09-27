@@ -8,6 +8,7 @@
 
 import UIKit
 import CloudKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,10 +22,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UINavigationController(rootViewController: PostListViewController())
         window?.makeKeyAndVisible()
         
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .providesAppNotificationSettings]) { (success, error) in
+            if let error = error {
+                print("🔊Error in function: \(#function) \(error) \(error.localizedDescription)")
+            }
+            
+            if success {
+                DispatchQueue.main.async {
+                    application.registerForRemoteNotifications()
+                }
+            }
+        }
+        
         return true
     }
-    
-    
     
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -52,3 +63,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        PostController.shared.fetchPost { (posts) in
+            guard let posts = posts else { return }
+            PostController.shared.posts = posts
+        }
+    }
+}

@@ -89,16 +89,24 @@ class PostDetailViewController: UIViewController {
 // MARK: - UpdateView
 private extension PostDetailViewController {
     func updateView() {
+        
+        if let post = post {
+            cardView.imageView.image = post.photo
+            reload()
+            
+            PostController.shared.checkSubscription(to: post) { (success) in
+                let followText = success ? "Unfollow" : "Follow"
+                DispatchQueue.main.async {
+                    self.followButton.setTitle(followText, for: .normal)
+                }
+            }
+        } else { return }
+        
         view.backgroundColor = .white
         addSubviews(subviews: [tableView, cardView, buttonStackView])
         setupButtonStack()
         setupConstraints()
-        
-        if let photo = post?.photo {
-            cardView.imageView.image = photo
-            reload()
-        }
-        
+    
         view.bringSubviewToFront(buttonStackView)
     }
     
@@ -140,7 +148,13 @@ private extension PostDetailViewController {
     }
     
     @objc func followButtonTapped() {
-        print("\(#function)")
+        guard let post = post else { return }
+        PostController.shared.toggleSubscription(to: post) { (success) in
+            let followText = success ? "Follow" : "Unfollow"
+            DispatchQueue.main.async {
+                self.followButton.setTitle(followText, for: .normal)
+            }
+        }
     }
 }
 
