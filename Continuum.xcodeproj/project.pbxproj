@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		D7275BB2215B573D004D286B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7275BB1215B573D004D286B /* AppDelegate.swift */; };
-		D7275BB7215B573D004D286B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7275BB5215B573D004D286B /* Main.storyboard */; };
 		D7275BB9215B573E004D286B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D7275BB8215B573E004D286B /* Assets.xcassets */; };
 		D7275BBC215B573E004D286B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7275BBA215B573E004D286B /* LaunchScreen.storyboard */; };
 		D73A4C82215D5B0500B9A486 /* CancelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D73A4C81215D5B0500B9A486 /* CancelButton.swift */; };
@@ -36,7 +35,6 @@
 /* Begin PBXFileReference section */
 		D7275BAE215B573D004D286B /* Continuum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Continuum.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7275BB1215B573D004D286B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D7275BB6215B573D004D286B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D7275BB8215B573E004D286B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D7275BBB215B573E004D286B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D7275BBD215B573E004D286B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -139,7 +137,6 @@
 		D7E5CAFD215BC27A00997CB4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				D7275BB5215B573D004D286B /* Main.storyboard */,
 				D7275BB8215B573E004D286B /* Assets.xcassets */,
 				D7275BBA215B573E004D286B /* LaunchScreen.storyboard */,
 				D7275BBD215B573E004D286B /* Info.plist */,
@@ -259,7 +256,6 @@
 			files = (
 				D7275BBC215B573E004D286B /* LaunchScreen.storyboard in Resources */,
 				D7275BB9215B573E004D286B /* Assets.xcassets in Resources */,
-				D7275BB7215B573D004D286B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,14 +292,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		D7275BB5215B573D004D286B /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D7275BB6215B573D004D286B /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		D7275BBA215B573E004D286B /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
