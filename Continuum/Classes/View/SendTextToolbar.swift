@@ -52,6 +52,10 @@ class SendTextToolbar: UIView {
         setupConstraints()
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     func setupConstraints() {
         textField.anchorCenterYToSuperview()
         textField.anchor(nil, leading: leadingAnchor, bottom: nil, trailing: sendButton.leadingAnchor, topConstant: 0, leftConstant: 8, bottomConstant: 0, rightConstant: 8, widthConstant: 0, heightConstant: 44)
@@ -59,11 +63,6 @@ class SendTextToolbar: UIView {
         sendButton.anchorCenterYToSuperview()
         sendButton.anchor(nil, leading: nil, bottom: nil, trailing: trailingAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 8, widthConstant: 60, heightConstant: 30)
         
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 

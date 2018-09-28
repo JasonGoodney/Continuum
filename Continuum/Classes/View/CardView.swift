@@ -15,6 +15,7 @@ protocol CardViewDelegate: class {
 
 class CardView: UIView {
 
+    // MARK: - Properties
     weak var delegate: CardViewDelegate?
     
     var title: String? {
@@ -33,6 +34,7 @@ class CardView: UIView {
         }
     }
     
+    // MARK: - Subviews
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
@@ -57,6 +59,7 @@ class CardView: UIView {
         return view
     }()
     
+    // MARK: - Init
     convenience init() {
         self.init(frame: .zero)
     }

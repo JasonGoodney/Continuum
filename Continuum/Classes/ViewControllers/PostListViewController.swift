@@ -52,21 +52,40 @@ class PostListViewController: UIViewController {
         super.viewDidLoad()
         
         loginPlacerholderVC.delegate = self
-        
         updateView()
         
-        performFullSync()
-        
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostsChangedNotification, object: nil)
-
+        
+        PostController.shared.checkAccountStatus { (status) in
+            guard let status = status else { return }
+            
+            switch status {
+            case .available:
+                if self.children.contains(self.loginPlacerholderVC) {
+                    self.loginPlacerholderVC.remove()
+                }
+                self.performFullSync()
+                break
+            case .noAccount:
+                let okAction = UIAlertAction(title: "Take Me", style: .default) { (_) in
+                    self.openSettings()
+                }
+                let cancelAction = UIAlertAction(title: "Bore Me", style: .cancel, handler: nil)
+                Alert.present(on: self, title: "Must be logged into iCloud", message: "We'll take you to the setting.", withActions: [cancelAction, okAction])
+                self.add(self.loginPlacerholderVC)
+            case .couldNotDetermine:
+                print("Could not determine account")
+            case .restricted:
+                print("Account access has been restricted")
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        checkAccountStatus()
-        
         resultsArray = PostController.shared.posts
+        
         reload()
     }
     
@@ -109,10 +128,11 @@ private extension PostListViewController {
     }
     
     @objc func performFullSync() {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        self.view.addSubview(self.loadingIndicatorView)
-        self.loadingIndicatorView.center = self.view.center
-        self.refreshControl.beginRefreshing()
+        DispatchQueue.main.async {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            self.view.addSubview(self.loadingIndicatorView)
+            self.loadingIndicatorView.center = self.view.center
+        }
         
         PostController.shared.fetchPost { (posts) in
             guard let posts = posts else { return }
@@ -127,35 +147,6 @@ private extension PostListViewController {
                 if UIApplication.shared.isNetworkActivityIndicatorVisible {
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 }
-                
-            }
-
-        }
-    }
-    
-    func checkAccountStatus() {
-        CKContainer.default().accountStatus { (status, error) in
-            if let error = error {
-                print("error get account status: \(error)")
-            }
-            
-            switch status {
-            case .available:
-                if self.children.contains(self.loginPlacerholderVC) {
-                    self.loginPlacerholderVC.remove()
-                }
-                break
-            case .noAccount:
-                let okAction = UIAlertAction(title: "Take Me", style: .default) { (_) in
-                    self.openSettings()
-                }
-                let cancelAction = UIAlertAction(title: "Bore Me", style: .cancel, handler: nil)
-                Alert.present(on: self, title: "Must be logged into iCloud", message: "We'll take you to the setting.", withActions: [cancelAction, okAction])
-                self.add(self.loginPlacerholderVC)
-            case .couldNotDetermine:
-                print("Could not determine account")
-            case .restricted:
-                print("Account access has been restricted")
             }
         }
     }

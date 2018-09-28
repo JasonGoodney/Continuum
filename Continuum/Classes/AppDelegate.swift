@@ -15,25 +15,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UINavigationController(rootViewController: PostListViewController())
         window?.makeKeyAndVisible()
         
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .providesAppNotificationSettings]) { (success, error) in
-            if let error = error {
-                print("🔊Error in function: \(#function) \(error) \(error.localizedDescription)")
+        // If an account is available request authorization
+        // FIXME: - doesnt work
+        PostController.shared.checkAccountStatus { (status) in
+            guard let status = status else { return }
+            
+            switch status {
+            case .available:
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .providesAppNotificationSettings]) { (success, error) in
+                    if let error = error {
+                        print("🔊Error in function: \(#function) \(error) \(error.localizedDescription)")
+                    }
+                    
+                    if success {
+                        DispatchQueue.main.async {
+                            application.registerForRemoteNotifications()
+                        }
+                    }
+                }
+            case .noAccount, .couldNotDetermine, .restricted:
+                return
             }
             
-            if success {
-                DispatchQueue.main.async {
-                    application.registerForRemoteNotifications()
-                }
-            }
         }
-        
+
         return true
     }
     

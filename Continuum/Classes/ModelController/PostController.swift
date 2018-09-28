@@ -31,7 +31,9 @@ class PostController {
     let PostCommentsChangedNotification = Notification.Name("PostCommentsChanged")
     let SubscribeToNewPostNotification = Notification.Name("SubscribeToNewPost")
     
-    // MARK: - Methods
+    
+    // MARK: - Save
+    
     func addComment(text: String, post: Post, completion: @escaping (Comment) -> Void) {
         let postReference = CKRecord.Reference(recordID: post.ckRecordId, action: .deleteSelf)
         let comment = Comment(text: text, post: post, postReference: postReference)
@@ -50,9 +52,9 @@ class PostController {
                 completion(comment)
             }
         }
-        
-        
     }
+    
+    // MARK: - Create
     
     func createPostWith(photo: UIImage, caption: String, completion: @escaping (Post) -> Void) {
         let post = Post(photo: photo, caption: caption)
@@ -72,6 +74,8 @@ class PostController {
             }
         }
     }
+    
+    // MARK: - Fetch
     
     func fetchPost(completion: @escaping ([Post]?) -> Void) {
 
@@ -124,6 +128,7 @@ class PostController {
         }
     }
     
+    // MARK: - Subscriptions
     func subscribeToNewPosts(completion: ((Bool, Error?) -> Void)?) {
         
         let predicate = NSPredicate(value: true)
@@ -228,6 +233,19 @@ class PostController {
                 return
             }
             
+        }
+    }
+    
+    // MARK: - Ckeck Account Status
+    func checkAccountStatus(completion: @escaping (CKAccountStatus?) -> Void) {
+        CKContainer.default().accountStatus { (status, error) in
+            if let error = error {
+                print("error get account status: \(error)")
+                completion(nil)
+                return
+            }
+            
+            completion(status)
         }
     }
 }
