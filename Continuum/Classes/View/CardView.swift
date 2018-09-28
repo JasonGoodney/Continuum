@@ -47,7 +47,7 @@ class CardView: UIView {
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
-        label.textColor = UIColor(red: 199/255, green: 199/255, blue: 199/255, alpha: 1)
+        label.textColor = .white
         label.textAlignment = .left
         return label
     }()

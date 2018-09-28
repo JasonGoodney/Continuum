@@ -83,8 +83,7 @@ extension UIView {
 extension Date {
     func prettyDate() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .medium
+        dateFormatter.dateFormat = "MMM d, h:mm a"
         return dateFormatter.string(from: self)
     }
 }
