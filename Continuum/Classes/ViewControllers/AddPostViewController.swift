@@ -77,7 +77,7 @@ extension AddPostViewController {
         dismiss()
     }
     
-    @objc func keyboardWillShow(_ notification: Notification) {
+    @objc fileprivate func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             keyboardHeight = keyboardFrame.height
         }

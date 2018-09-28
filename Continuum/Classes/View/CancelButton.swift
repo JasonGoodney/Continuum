@@ -24,12 +24,18 @@ class CancelButton: UIButton {
     
     var parentViewController: UIViewController
     
+    var title = "Cancel" {
+        didSet {
+            self.setTitle(title, for: .normal)
+        }
+    }
+    
     init(frame: CGRect, parentViewController: UIViewController) {
         self.parentViewController = parentViewController
         
         super.init(frame: frame)
         
-        setTitle("Cancel", for: .normal)
+        setTitle(title, for: .normal)
         addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         backgroundColor = UIColor.black.withAlphaComponent(0.5)
         

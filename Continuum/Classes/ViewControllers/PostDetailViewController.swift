@@ -67,7 +67,11 @@ class PostDetailViewController: UIViewController, CancelButtonDelegate {
         return button
     }()
     
-    lazy var cancelButton = CancelButton(frame: .zero, parentViewController: self)
+    lazy var cancelButton: CancelButton = {
+        let button = CancelButton(frame: .zero, parentViewController: self)
+        button.title = "Close"
+        return button
+    }()
     
     // MARK: - Lifcycle
     override func viewDidLoad() {
@@ -83,8 +87,6 @@ class PostDetailViewController: UIViewController, CancelButtonDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostCommentsChangedNotification, object: nil)
         
         updateView()
-        
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: self)
     }
     
     override func updateViewConstraints() {
