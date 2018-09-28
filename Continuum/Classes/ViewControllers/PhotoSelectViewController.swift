@@ -76,8 +76,7 @@ extension PhotoSelectorViewController {
 // MARK: - User Interaction
 extension PhotoSelectorViewController {
     @objc func selectPhotoButtonTapped() {
-        print("🤶\(#function)")
-        imagePicker.allowsEditing = false
+        imagePicker.allowsEditing = true
         imagePicker.delegate = self
         
         let photoAction = UIAlertAction(title: "Photo", style: .default) { (_) in
@@ -98,7 +97,7 @@ extension PhotoSelectorViewController {
 extension PhotoSelectorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
         selectPhotoButton.text = ""
         cardView.imageView.image = image
         dismiss()

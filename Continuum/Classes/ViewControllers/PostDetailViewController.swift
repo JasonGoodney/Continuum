@@ -83,6 +83,8 @@ class PostDetailViewController: UIViewController, CancelButtonDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: PostController.shared.PostCommentsChangedNotification, object: nil)
         
         updateView()
+        
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: self)
     }
     
     override func updateViewConstraints() {

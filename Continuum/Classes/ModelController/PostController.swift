@@ -46,7 +46,7 @@ class PostController {
             
             if let _ = record {
                 print("saved comment record")
-                post.comments.append(comment)
+                post.comments.insert(comment, at: 0)
                 completion(comment)
             }
         }
@@ -67,7 +67,7 @@ class PostController {
             
             if let _ = record {
                 print("saved post record")
-                self.posts.append(post)
+                self.posts.insert(post, at: 0)
                 completion(post)
             }
         }

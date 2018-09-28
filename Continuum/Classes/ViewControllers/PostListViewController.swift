@@ -10,9 +10,6 @@ import UIKit
 import CloudKit
 
 class PostListViewController: UIViewController {
-    func loadingIndicatorViewIsShown() {
-        
-    }
     
     // MARK: - Properties
     var resultsArray: [Post] = []
@@ -44,7 +41,7 @@ class PostListViewController: UIViewController {
         view.register(PostCell.self, forCellReuseIdentifier: PostCell.reuseIdentifier)
         view.separatorColor = .clear
         // FIXME: - the refresh control is pushing the tableview top edge inset down
-        view.refreshControl = self.refreshControl
+//        view.refreshControl = self.refreshControl
         return view
     }()
     lazy var addPostButton = UIBarButtonItem(
@@ -66,6 +63,7 @@ class PostListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         checkAccountStatus()
         
         resultsArray = PostController.shared.posts

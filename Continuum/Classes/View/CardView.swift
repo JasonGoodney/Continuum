@@ -50,7 +50,12 @@ class CardView: UIView {
         return label
     }()
     
-    let imageView = UIImageView()
+    let imageView: UIImageView = {
+        let view = UIImageView()
+        view.isUserInteractionEnabled = false
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
     
     convenience init() {
         self.init(frame: .zero)
@@ -80,11 +85,9 @@ class CardView: UIView {
         setupConstraints()
         
         addShadow()
+        titleLabel.addShadow()
+        subtitleLabel.addShadow()
         
-        imageView.isUserInteractionEnabled = false
-        guard let image = imageView.image else { return }
-        imageView.frame = AVMakeRect(aspectRatio: image.size,
-                                     insideRect: imageView.frame)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -111,7 +114,6 @@ extension UIView {
         layer.shadowRadius = 12.0
         layer.shadowOpacity = 0.7
         layer.masksToBounds = false
-//        clipsToBounds = false
     }
     
     func addCornerRadius(_ radius: CGFloat = 20) {
