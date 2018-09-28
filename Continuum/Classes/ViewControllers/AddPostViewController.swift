@@ -104,7 +104,6 @@ extension AddPostViewController {
 // MARK: - SendTextToolbarDelegate
 extension AddPostViewController: SendTextToolbarDelegate {
     @objc func sendTextToolbarSendButtonTapped(_ sendTextToolbar: SendTextToolbar) {
-        print("🤶\(#function)")
         guard let photo = photoSelectVC.cardView.imageView.image else {
             Alert.presentNoPhotoAlert(on: self)
             return }

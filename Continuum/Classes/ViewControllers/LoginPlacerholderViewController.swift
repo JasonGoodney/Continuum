@@ -48,7 +48,6 @@ class LoginPlacerholderViewController: UIViewController {
     }
 
     @objc func loginButtonTapped() {
-        print("🤶\(#function)")
         delegate?.loginPlacerholderViewLoginButtonTapped()
     }
 }

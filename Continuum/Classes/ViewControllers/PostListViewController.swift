@@ -244,7 +244,6 @@ extension PostListViewController: UISearchBarDelegate {
 // MARK: - LoginPlacerholderViewControllerDelegate
 extension PostListViewController: LoginPlacerholderViewControllerDelegate {
     func loginPlacerholderViewLoginButtonTapped() {
-        print("🤶\(#function)")
         openSettings()
     }
 }
